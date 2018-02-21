@@ -1,5 +1,7 @@
 # BeyondLabs public api
-## 1. Using OAuth
+## 1. Using OAuth2
+This API uses the well-known OAuth2 method of authenticating users securely without needing to share the user's password between apps. It's implemented in a number of readily available third-party libraries for pretty much any language or framework, but it's also very simple and easy to build your own client.
+ 
 #### Account Connecting process - needs to be done once per user
 1. You'll need your Client ID `CLIENT_ID` and secret `SECRET`
 2. In the following URL:
