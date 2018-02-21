@@ -1,5 +1,5 @@
-
-# Using OAuth
+#BeyondLabs public api
+## 1. Using OAuth
 #### Account Connecting process - needs to be done once per user
 1. You'll need your Client ID `CLIENT_ID` and secret `SECRET`
 2. In the following URL:
@@ -46,8 +46,8 @@ curl 'http://localhost.bbby.io:3400/public-api/lists?access_token=d0a5399eb2d0c1
 
 
 
-## Endpoints
-  ## Index action: `GET /public-api/lists`
+## 2. Endpoints
+  ### Index action: `GET /public-api/lists`
   * Parameters:
     * `name`: Get all having this name (Exact match) 
     * `owner_id`: Get all having this owner
@@ -89,7 +89,7 @@ curl 'http://localhost.bbby.io:3400/public-api/lists?access_token=d0a5399eb2d0c1
 ```
 
   
-  ## Show action: `GET /public-api/lists/12345`
+  ### Show action: `GET /public-api/lists/12345`
   * Parameters: List ID in path
   * Returns: Object (JSON)
     * Example:
@@ -132,7 +132,7 @@ curl 'http://localhost.bbby.io:3400/public-api/lists?access_token=d0a5399eb2d0c1
   * Returns HTTP 404 if list not found, 403 if you are not allowed to see this list (not your list)
 
 
-  ## Last updated action: `GET /public-api/lists/12345/last_updated`
+  ### Last updated action: `GET /public-api/lists/12345/last_updated`
   * Parameters: List ID in path
   * Returns: Object (JSON)
     * Example:
