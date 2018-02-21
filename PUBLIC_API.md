@@ -1,15 +1,15 @@
 
 # Using OAuth
 #### Account Connecting process - needs to be done once per user
-1. You'll need your Application ID `APPID` and secret `SECRET`
+1. You'll need your Client ID `CLIENT_ID` and secret `SECRET`
 2. In the following URL:
-    * Replace `APPID` in the following URL with your APPID
+    * Replace `CLIENT_ID` in the following URL with your CLIENT_ID
     * Replace http://decorist.com/example/callback/receiver with your actual callback location
-    * Send your logged-in app user to the resulting URL. `https://public-api.bbby.io/public-api/oauth/new?client_id=APPID&redirect_uri=http://decorist.com/example/callback/receiver`
+    * Send your logged-in app user to the resulting URL. `https://public-api.bbby.io/public-api/oauth/new?client_id=CLIENT_ID&redirect_uri=http://decorist.com/example/callback/receiver`
 3. After the user has authorized your app, they will be directed back to your app at the redirect_uri you provided.
     * 2 more parameters will be sent, so the URL will look like this: `http://decorist.com/example/callback/receiver?code=fb214880ae40f1a57d3f96803c558bc5&response_type=code`
 4. You now need to take that code and use it, along with your application secret, to get an access_token for the user. You won't have to save the code after that.
-    * Make a POST request to the public api like this. Here's an example using CURL. You may use any HTTP library to do this. Make sure you correctly fill out the `client_secret` param with your real secret, and the `code` with the `code` we sent back with when they landed back on your site.
+    * Make a POST request to the public api like this. Here's an example using CURL. You may use any HTTP library to do this. Make sure you correctly fill out the `client_id` and `client_secret` params with your real ones, and the `code` with the `code` we sent back with when they landed back on your site.
     ```
     curl -X POST -d '' "http://public-api.bbby.io/public-api/oauth/token?client_id=ab7257d1859b11d7241578b30ad0f311&client_secret=SECRET&code=fb214880ae40f1a57d3f96803c558bc5"
     ```
