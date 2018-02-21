@@ -32,12 +32,12 @@ Now, requests can be made to any of the routes below on behalf of the user. Thes
 ##### Header Way
 Include a custom header called "Authorization" - it contains the word "token", then a space, then the access_token for the user.
 ```
-curl -H 'Authorization: token d0a5399eb2d0c1d60316a5bade19bd0b' 'http://localhost.bbby.io:3400/public-api/lists' 
+curl -H 'Authorization: token d0a5399eb2d0c1d60316a5bade19bd0b' 'http://public-api.bbby.io/public-api/lists' 
 ```
 ##### URL Way
 Append a URL parameter `access_token` to any request, as below. 
 ```
-curl 'http://localhost.bbby.io:3400/public-api/lists?access_token=d0a5399eb2d0c1d60316a5bade19bd0b' 
+curl 'http://public-api.bbby.io/public-api/lists?access_token=d0a5399eb2d0c1d60316a5bade19bd0b' 
 ```
 
 #### Notes
