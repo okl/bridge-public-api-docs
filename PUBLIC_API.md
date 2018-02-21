@@ -1,4 +1,4 @@
-#BeyondLabs public api
+# BeyondLabs public api
 ## 1. Using OAuth
 #### Account Connecting process - needs to be done once per user
 1. You'll need your Client ID `CLIENT_ID` and secret `SECRET`
