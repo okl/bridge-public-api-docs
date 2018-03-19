@@ -1,4 +1,4 @@
-# BeyondLabs public api
+# Bridge public api
 ## 1. Using OAuth2
 This API uses the well-known OAuth2 method of authenticating users securely without needing to share the user's password between apps. It's implemented in a number of readily available third-party libraries for pretty much any language or framework, but it's also very simple and easy to build your own client.
  
@@ -6,15 +6,19 @@ This API uses the well-known OAuth2 method of authenticating users securely with
 1. You'll need your Client ID `CLIENT_ID` and secret `SECRET`
 2. In the following URL:
     * Replace `CLIENT_ID` in the following URL with your CLIENT_ID
+    * Optionally (but recommended), send a `STATE` in the URL with a pseudo-random value which will be used later to determine if the caller is trusted.  This may not be needed for server-to-server calls where we know the IP address(es) of the server.
+    * Optionally (but recommended), send a `SCOPE` of `read` since you are requesting read access to lists for now.  We may need additional scopes down the line for other access.
     * Replace http://decorist.com/example/callback/receiver with your actual callback location
-    * Send your logged-in app user to the resulting URL. `https://public-api.bbby.io/public-api/oauth/new?client_id=CLIENT_ID&redirect_uri=http://decorist.com/example/callback/receiver`
+    * Send your logged-in app user to the resulting URL. `https://public-api.bbby.io/public-api/oauth/new?client_id=CLIENT_ID&state=STATE&scope=SCOPE&redirect_uri=http://decorist.com/example/callback/receiver`
 3. After the user has authorized your app, they will be directed back to your app at the redirect_uri you provided.
-    * 2 more parameters will be sent, so the URL will look like this: `http://decorist.com/example/callback/receiver?code=fb214880ae40f1a57d3f96803c558bc5&response_type=code`
-4. You now need to take that code and use it, along with your application secret, to get an access_token for the user. You won't have to save the code after that.
+    * 3 more parameters will be sent, so the URL will look like this: `http://decorist.com/example/callback/receiver?code=fb214880ae40f1a57d3f96803c558bc5&response_type=code&state=STATE`
+    * NOTE: We have not implemented the sending of the STATE parameter in the callback as of this writing, but we will do so to make sure there is a closed loop without a man in the middle.  This would require the caller to maintain this state on the user to make sure that it matched.
+4. You now need to take that `code` and use it, along with your application secret, to get an `access_token` for the user. You won't have to save the code after that.
     * Make a POST request to the public api like this. Here's an example using CURL. You may use any HTTP library to do this. Make sure you correctly fill out the `client_id` and `client_secret` params with your real ones, and the `code` with the `code` we sent back with when they landed back on your site.
     ```
-    curl -X POST -d '' "http://public-api.bbby.io/public-api/oauth/token?client_id=ab7257d1859b11d7241578b30ad0f311&client_secret=SECRET&code=fb214880ae40f1a57d3f96803c558bc5"
+    curl -X POST -d '' "http://public-api.bbby.io/public-api/oauth/token?client_id=ab7257d1859b11d7241578b30ad0f311&client_secret=SECRET&code=fb214880ae40f1a57d3f96803c558bc5&state=STATE&&redirect_uri=http://decorist.com/example/callback/receiver"
     ```
+    * Passing the redirect in again allows us to protect from XSS because we will match against the first one sent to make sure they are identical.
 5. The public api will respond with a JSON response that includes an `access_token`!
     ```json
     {"access_token":"d0a5399eb2d0c1d60316a5bade19bd0b",
@@ -29,15 +33,15 @@ This API uses the well-known OAuth2 method of authenticating users securely with
 
 Now, requests can be made to any of the routes below on behalf of the user. These requests can be done in 2 ways:
 
-##### Header Way
-Include a custom header called "Authorization" - it contains the word "token", then a space, then the access_token for the user.
+##### Header Way (DESIRED)
+Include a custom header called "Authorization" - it contains the word "Bearer", then a space, then the access_token for the user.
 ```
-curl -H 'Authorization: token d0a5399eb2d0c1d60316a5bade19bd0b' 'http://public-api.bbby.io/public-api/lists' 
+curl -H 'Authorization: Bearer d0a5399eb2d0c1d60316a5bade19bd0b' 'http://localhost.bbby.io:3400/public-api/lists' 
 ```
-##### URL Way
+##### URL Way (Might be helpful for testing, but should probably not be used from the browser in production)
 Append a URL parameter `access_token` to any request, as below. 
 ```
-curl 'http://public-api.bbby.io/public-api/lists?access_token=d0a5399eb2d0c1d60316a5bade19bd0b' 
+curl 'http://localhost.bbby.io:3400/public-api/lists?access_token=d0a5399eb2d0c1d60316a5bade19bd0b' 
 ```
 
 #### Notes
@@ -107,21 +111,25 @@ curl 'http://public-api.bbby.io/public-api/lists?access_token=d0a5399eb2d0c1d603
         "updated_at": "2018-02-21T00:22:32.498Z",
         "updated_by": null,
         "skus": [
-                {
-                  "id": 12345,
-                  "sku_name": "Big Comfy Chair",
-                  "images": ["http://....jpg", "http://2....jpg"],
-                  "link": "http://link/..../example/12345",
-                  "concept_name": "One Kings Lane or whatever",
-                  "brand_name": "Brand",
-                  "dimensions": "1 x 2 x 3 inches",
-                  "price": 123.45,
-                  "total_inventory": 0,
-                  "returnable": true,
-                  "margin_dollars": 111.00, // Note: may or may not be present depending on policy
-                  "category": "Armchairs",
-                  "color": "Blue"
-                },
+                  {
+                  	"brand_name": "Portfolio No.6",
+                  	"category_name": "Ornaments",
+                  	"color": "multi",
+                  	"color_family": "white",
+                  	"concept_name": "One Kings Lane",
+                  	"dimensions": "2.3\" L x 2\" W x 4.25\" H",
+                  	"primary_image": "https://okl.scene7.com/is/image/OKL/vmf_vendor_QXJ_4705522_1503961657559_734661",
+                  	"pdp_url": "https://www.onekingslane.com/search.do?query=77396214",
+                  	"margin_amount": "31.08",
+                  	"retail_price": "89.0",
+                  	"returnable": false,
+                  	"sku_id": 77396214,
+                  	"sku_name": "Teardrop Glass Ornaments, S/3",
+                  	"total_avail_qty": 1,
+                  	"alternate_images": [
+                  		"https://okl.scene7.com/is/image/OKL/vmf_vendor_QXJ_4705522_1503961940441_947302"
+                  	]
+                  },
             {
                 ...
             },
