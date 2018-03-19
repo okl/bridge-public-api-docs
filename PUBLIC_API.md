@@ -16,7 +16,7 @@ This API uses the well-known OAuth2 method of authenticating users securely with
 4. You now need to take that `code` and use it, along with your application secret, to get an `access_token` for the user. You won't have to save the code after that.
     * Make a POST request to the public api like this. Here's an example using CURL. You may use any HTTP library to do this. Make sure you correctly fill out the `client_id` and `client_secret` params with your real ones, and the `code` with the `code` we sent back with when they landed back on your site.
     ```
-    curl -X POST -d '' "https://dbb.bbby.io/public-api/oauth/token?client_id=ab7257d1859b11d7241578b30ad0f311&client_secret=SECRET&code=fb214880ae40f1a57d3f96803c558bc5&state=STATE&&redirect_uri=http://decorist.com/example/callback/receiver"
+    curl -X POST -d '' "https://dbb.bbby.io/public-api/oauth/token?client_id=ab7257d1859b11d7241578b30ad0f311&client_secret=SECRET&code=fb214880ae40f1a57d3f96803c558bc5&state=STATE&redirect_uri=http://decorist.com/example/callback/receiver"
     ```
     * Passing the redirect in again allows us to protect from XSS because we will match against the first one sent to make sure they are identical.
 5. The public api will respond with a JSON response that includes an `access_token`!
